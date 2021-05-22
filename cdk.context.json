@@ -1,0 +1,45 @@
+{
+  "vpc-provider:account=REDACTED:filter.vpc-id=REDACTED:region=REDACTED:returnAsymmetricSubnets=true": {
+    "vpcId": "REDACTED",
+    "vpcCidrBlock": "REDACTED",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "REDACTED",
+            "cidr": "REDACTED",
+            "availabilityZone": "REDACTED",
+            "routeTableId": "REDACTED"
+          }
+        ]
+      },
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "REDACTED",
+            "cidr": "REDACTED",
+            "availabilityZone": "REDACTED",
+            "routeTableId": "REDACTED"
+          },
+          {
+            "subnetId": "REDACTED",
+            "cidr": "REDACTED",
+            "availabilityZone": "REDACTED",
+            "routeTableId": "REDACTED"
+          },
+          {
+            "subnetId": "REDACTED",
+            "cidr": "REDACTED",
+            "availabilityZone": "REDACTED",
+            "routeTableId": "REDACTED"
+          }
+        ]
+      }
+    ]
+  }
+}
