@@ -9,9 +9,12 @@ from aws_cdk import aws_ec2 as ec2
 from aws_cdk.aws_codepipeline_actions import CodeCommitSourceAction
 from aws_cdk.aws_codepipeline_actions import CodeCommitTrigger
 
-DEV_ENV = core.Environment(account='DEV_ACCOUNT_NUMBER', region='REGION')
+DEV_ENV = core.Environment(account='DEV_ACCOUNT_ID', region='REGION')
 DEV_VPC_ID = 'DEV_VPC_ID'
-DEV_SUBNET_ID = 'DEV_SUBNET_ID'
+DEV_SUBNET_ID = 'REDACTED'
+PROD_ENV = core.Environment(account='PROD_ACCOUNT_ID', region='REGION')
+PROD_VPC_ID = 'PROD_VPC_ID'
+PROD_SUBNET_ID = 'REDACTED'
 
 class CdkReproStack(core.Stack):
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
@@ -53,6 +56,17 @@ class Pipeline(core.Stack):
                                              run_order=dev_stage.next_sequential_run_order(),
                                              additional_artifacts=[source_artifact])
         dev_stage.add_actions(dev_it)
+
+        prod_stage = pipeline.add_application_stage(Application(self, "CdkReproProdStage", env=PROD_ENV))
+        vpc_prod = ec2.Vpc.from_lookup(self, 'VpcProd', vpc_id=PROD_VPC_ID)
+        subnets_prod = [ec2.Subnet.from_subnet_id(self, 'SubnetProd', subnet_id=PROD_SUBNET_ID)]
+        prod_it = pipelines.ShellScriptAction(vpc=vpc_prod,
+                                              subnet_selection=ec2.SubnetSelection(subnets=subnets_prod),
+                                              action_name="SampleIntegrationTest",
+                                              commands=["echo Sample Integration Test"],
+                                              run_order=prod_stage.next_sequential_run_order(),
+                                              additional_artifacts=[source_artifact])
+        prod_stage.add_actions(prod_it)
 
 app = core.App()
 Pipeline(app, "CdkReproPipeline", env=DEV_ENV)
